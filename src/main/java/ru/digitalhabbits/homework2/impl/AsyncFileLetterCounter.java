@@ -22,20 +22,19 @@ public class AsyncFileLetterCounter implements FileLetterCounter {
     private Map<Character, Long> result = new ConcurrentHashMap<>();
 
     class Worker implements Runnable {
-
         int line;
         public Worker(int i) {
             this.line = i;
         }
 
         @SneakyThrows
+
         @Override
         public void run() {
             countedLines.add(new MyLetterCounter().count(listFileLines.get(line)));
             barrier.await();
             new MyLetterCountMerge().merge(countedLines.get(line), result);
         }
-
     }
     public Map<Character, Long> getResult() {
         return result;
@@ -46,7 +45,7 @@ public class AsyncFileLetterCounter implements FileLetterCounter {
     }
 
     @Override
-    public Map<Character, Long> count(File input) throws ExecutionException, InterruptedException, BrokenBarrierException, FileNotFoundException {
+    public Map<Character, Long> count(File input) throws InterruptedException, FileNotFoundException {
         listFileLines = this
                 .reader
                 .readLines(input)
